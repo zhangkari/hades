@@ -3,10 +3,12 @@ package com.class100.hades.http;
 import org.junit.Assert;
 import org.junit.Test;
 
+import okhttp3.OkHttpClient;
+
 public class HaRequestDispatcherTest {
     @Test
     public void testBuildCompleteUrl() {
-        HaRequestDispatcher dispatch = new HaRequestDispatcher();
+        HaRequestDispatcher dispatch = new HaRequestDispatcher(new OkHttpClient.Builder().build());
         String url, expected, actual;
 
         url = "/hello";
