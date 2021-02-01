@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+def build = depends.build
+def support = depends.support
+def test = depends.test
+
+def version_code = 000001
+def version_name = "0.0.1"
+
+def USER = "zhangkari"
+def GROUP = "com.class100.atropos"
+def ARTIFACT = "atropos"
+def VCode = version_code
+def VName = version_name
+def DESCRIPTION = "lib Atropos for android infra"
+def URL = "https://github.com/zhangkari/smartadapter"
+
+android {
+    compileSdkVersion build.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion build.minSdkVersion
+        targetSdkVersion build.compileSdkVersion
+        versionCode version_code
+        versionName version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    publish {
+        userOrg = USER
+        groupId = GROUP
+        artifactId = ARTIFACT
+        publishVersion = VName
+        desc = DESCRIPTION
+        website = URL
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.aar'])
+    implementation support.appcompat
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
+//    implementation 'com.class100.atropos:atropos:0.0.1'
+    testImplementation test.junit
+    androidTestImplementation test.andJunit
+    androidTestImplementation test.espresso
+}
