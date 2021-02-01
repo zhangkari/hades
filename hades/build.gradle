@@ -14,7 +14,7 @@ def ARTIFACT = "hades"
 def VCode = version_code
 def VName = version_name
 def DESCRIPTION = "lib Hades for android infra"
-def URL = "https://github.com/zhangkari/smartadapter"
+def URL = "https://github.com/zhangkari/hades"
 
 android {
     compileSdkVersion build.compileSdkVersion
