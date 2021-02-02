@@ -47,11 +47,10 @@ android {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.aar'])
     implementation support.appcompat
     api 'com.squareup.okhttp3:okhttp:4.2.2'
     api 'org.conscrypt:conscrypt-android:2.2.1'
-//    implementation 'com.class100.atropos:atropos:0.0.1'
+    api 'com.class100.atropos:atropos:0.0.1'
     testImplementation test.junit
     androidTestImplementation test.andJunit
     androidTestImplementation test.espresso
