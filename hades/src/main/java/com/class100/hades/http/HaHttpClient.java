@@ -19,7 +19,7 @@ import okio.BufferedSource;
 public final class HaHttpClient extends AtContextAbility {
     private static final String TAG = "HaHttpClient";
     private static boolean enableLog;
-    private static final HaHttpClient _instance = new HaHttpClient();
+    private volatile static HaHttpClient _instance;
     private HaRequestDispatcher dispatcher;
 
     public static void enableLog(boolean enableLog) {
@@ -27,14 +27,21 @@ public final class HaHttpClient extends AtContextAbility {
     }
 
     public static HaHttpClient getInstance() {
+        if (_instance == null) {
+            synchronized (HaHttpClient.class) {
+                if (_instance == null) {
+                    _instance = new HaHttpClient();
+                }
+            }
+        }
         return _instance;
     }
 
     private HaHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (enableLog) {
-            builder.addInterceptor(new LogInterceptor());
-        }
+        //    if (enableLog) {
+        builder.addInterceptor(new LogInterceptor());
+        //    }
         dispatcher = new HaRequestDispatcher(builder.build());
     }
 

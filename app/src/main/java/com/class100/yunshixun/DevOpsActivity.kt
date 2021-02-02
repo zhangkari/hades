@@ -27,7 +27,7 @@ class DevOpsActivity : AppCompatActivity() {
         init()
     }
 
-    fun init() {
+    private fun init() {
         val data = AtPrefs.get(DEV_OPS_URL_HISTORY, "");
         et_url.setText(data)
         btn_go.setOnClickListener {
@@ -39,7 +39,7 @@ class DevOpsActivity : AppCompatActivity() {
 
         btn_get_token.setOnClickListener {
             HaHttpClient.getInstance().enqueue(
-                YsxTokenRequest("15928695284", "ZSC1988love"),
+                YsxTokenRequest("15928695284", "Androidclass100"),
                 object : HaApiCallback<String> {
                     override fun onError(code: Int, message: String?) {
                         Log.d(TAG, "error:$code, message")

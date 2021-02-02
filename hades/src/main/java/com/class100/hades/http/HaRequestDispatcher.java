@@ -1,5 +1,6 @@
 package com.class100.hades.http;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
 import com.class100.atropos.generic.AtCollections;
@@ -10,6 +11,10 @@ import com.class100.atropos.generic.AtTexts;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,13 +28,25 @@ import okhttp3.Response;
 
 public class HaRequestDispatcher {
     private static final String TAG = HaRequestDispatcher.class.getSimpleName();
-    
+
+    public static final int ENV_PROD = 0;
+    public static final int ENV_QA = 1;
+    public static final int ENV_DEV = 2;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ElementType.FIELD, ElementType.PARAMETER})
+    @IntDef({ENV_PROD, ENV_QA, ENV_DEV})
+    @interface HostEnv {
+
+    }
+
     /**
      * 0 product env
      * 1 qa env
      * 2 dev env
      */
-    private static int env = 0;
+    private static @HostEnv
+    int env = 0;
 
     /**
      * Use to count request, seqId will add 10 when a new request emit
@@ -38,7 +55,7 @@ public class HaRequestDispatcher {
 
     private final OkHttpClient client;
 
-    public static void switchEnv(int env) {
+    public static void switchEnv(@HostEnv int env) {
         if (env < 0 || env > 2) {
             HaRequestDispatcher.env = 0;
         } else {
@@ -96,19 +113,22 @@ public class HaRequestDispatcher {
     }
 
     Request adaptRequest(HaRequest req) {
+        req.inflate();
         Request.Builder builder = new Request.Builder();
         if (!AtCollections.isEmpty(req.headers)) {
             for (Map.Entry<String, String> e : req.headers.entrySet()) {
                 builder.addHeader(e.getKey(), e.getValue());
             }
         }
-        builder.url(buildCompleteUrl(req.url, req.group));
+        final String url = buildCompleteUrl(req.url, req.group);
         switch (req.getMethod()) {
             case HaRequest.METHOD_GET:
+                builder.url(buildGetParameters(url, req.parameters));
                 builder.get();
                 break;
 
             case HaRequest.METHOD_POST:
+                builder.url(url);
                 builder.post(RequestBody.create(adaptRequestBody(req.parameters), buildRequestMediaType()));
                 break;
 
@@ -117,6 +137,22 @@ public class HaRequestDispatcher {
                 break;
         }
         return builder.build();
+    }
+
+    String buildGetParameters(String url, Map<String, String> params) {
+        if (AtCollections.isEmpty(params)) {
+            return url;
+        }
+        StringBuilder sb = new StringBuilder(url);
+        sb.append("?");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            sb.append(entry.getKey())
+                .append("=")
+                .append(entry.getValue())
+                .append("&");
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        return sb.toString();
     }
 
     String buildCompleteUrl(String url, String group) {

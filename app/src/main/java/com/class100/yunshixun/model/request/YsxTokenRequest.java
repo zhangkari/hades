@@ -6,10 +6,9 @@ import java.util.Map;
 
 public class YsxTokenRequest extends YsxApiRequest {
     private static final String API_URL = UrlRegister.URL_GET_TOKEN;
-    private static final String IDENTITY = "6ff56fecf02981471ce1c319f520be2f";
 
-    private String mobile;
-    public String password;
+    private final String mobile;
+    public final String password;
 
     public YsxTokenRequest(String mobile, String password) {
         this.mobile = mobile;
@@ -22,9 +21,8 @@ public class YsxTokenRequest extends YsxApiRequest {
     }
 
     @Override
-    protected Map<String, String> buildParameters(Map<String, String> map) {
+    protected void buildParams(Map<String, String> map) {
         map.put("mobile", mobile);
         map.put("password", password);
-        return map;
     }
 }

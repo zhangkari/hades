@@ -6,7 +6,6 @@ import java.util.Map;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-@SuppressWarnings("unchecked")
 public interface HadesManifest {
     String mainApp = "class100";
     String ipower = "ipower";
@@ -21,7 +20,7 @@ public interface HadesManifest {
             );
             put(ipower, new String[]{
                 "https://meeting.125339.ebupt.net/mixapi",
-                "https://meetingpre.125339.ebupt.net/mixapi",
+                "https://contacts.125339.com.cn",
                 "https://meetingpre.125339.ebupt.net/mixapi"
             });
         }
@@ -37,7 +36,7 @@ public interface HadesManifest {
     HashMap<String, Class<? extends HaApiResponse<?>>> ResponseTable = new HashMap<String, Class<? extends HaApiResponse<?>>>() {
         {
             /* todo */
-            put(mainApp, (Class<? extends HaApiResponse<?>>) HaApiResponse.class);
+            // put(mainApp, (Class<? extends HaApiResponse<?>>) HaApiResponse.class);
         }
     };
 }

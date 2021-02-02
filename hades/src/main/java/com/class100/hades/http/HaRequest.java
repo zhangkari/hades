@@ -2,7 +2,6 @@ package com.class100.hades.http;
 
 import androidx.annotation.IntDef;
 
-import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtSerializers;
 
 import java.lang.annotation.Retention;
@@ -25,15 +24,14 @@ public abstract class HaRequest {
     String id;
     String group;
     String url;
+    @RequestMethod
     int method;
     Map<String, String> headers;
     Map<String, String> parameters;
-    Map<String, String> userParams;
 
     public HaRequest() {
         headers = new HashMap<>(8);
         parameters = new HashMap<>(8);
-        userParams = new HashMap<>(8);
     }
 
     protected String getId() {
@@ -46,7 +44,8 @@ public abstract class HaRequest {
 
     protected abstract String getUrl();
 
-    protected int getMethod() {
+    protected @RequestMethod
+    int getMethod() {
         return METHOD_GET;
     }
 
@@ -54,29 +53,22 @@ public abstract class HaRequest {
         return map;
     }
 
-    protected Map<String, String> getHeaders() {
-        return null;
+    protected Map<String, String> buildHeaders(final Map<String, String> map) {
+        return map;
     }
 
-    private Map<String, String> getUserParameters() {
-        userParams.clear();
-        userParams = buildParameters(userParams);
-        return userParams;
-    }
-
-    final String emit() {
+    final HaRequest inflate() {
         id = getId();
         group = getGroup();
         url = getUrl();
         method = getMethod();
-        Map<String, String> map = getUserParameters();
-        if (!AtCollections.isEmpty(map)) {
-            parameters.putAll(map);
-        }
-        Map<String, String> header = getHeaders();
-        if (!AtCollections.isEmpty(header)) {
-            headers.putAll(header);
-        }
-        return AtSerializers.toJson(this);
+
+        parameters = buildParameters(parameters);
+        headers = buildHeaders(headers);
+        return this;
+    }
+
+    final String emit() {
+        return AtSerializers.toJson(inflate());
     }
 }
