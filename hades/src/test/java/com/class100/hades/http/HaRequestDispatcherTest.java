@@ -12,13 +12,13 @@ public class HaRequestDispatcherTest {
         String url, expected, actual;
 
         url = "/hello";
-        expected = HadesManifest.HostTable.get(HadesManifest.mainApp)[0] + url;
-        actual = dispatch.buildCompleteUrl(url, HadesManifest.mainApp);
+        expected = HadesManifest.HostTable.get(HadesManifest.host_mainApp)[0] + url;
+        actual = dispatch.buildCompleteUrl(url, HadesManifest.host_mainApp);
         Assert.assertEquals(expected, actual);
 
         url = "hello";
-        expected = HadesManifest.HostTable.get(HadesManifest.mainApp)[0] + "/" + url;
-        actual = dispatch.buildCompleteUrl(url, HadesManifest.mainApp);
+        expected = HadesManifest.HostTable.get(HadesManifest.host_mainApp)[0] + "/" + url;
+        actual = dispatch.buildCompleteUrl(url, HadesManifest.host_mainApp);
         Assert.assertEquals(expected, actual);
     }
 }
