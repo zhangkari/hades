@@ -91,7 +91,7 @@ public class HaRequestDispatcher {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                invokeCallback(request.tag, response, callback);
+                invokeCallback(request.group, response, callback);
             }
         });
     }
@@ -141,7 +141,7 @@ public class HaRequestDispatcher {
                 builder.addHeader(e.getKey(), e.getValue());
             }
         }
-        final String url = buildCompleteUrl(req.url, req.group);
+        final String url = buildCompleteUrl(req.url, req.host);
         switch (req.getMethod()) {
             case HaRequest.METHOD_GET:
                 builder.url(buildGetParameters(url, req.parameters));
@@ -176,10 +176,10 @@ public class HaRequestDispatcher {
         return sb.toString();
     }
 
-    String buildCompleteUrl(String url, String group) {
-        String[] hosts = HadesManifest.HostTable.get(group);
+    String buildCompleteUrl(String url, String hostKey) {
+        String[] hosts = HadesManifest.HostTable.get(hostKey);
         if (AtCollections.isEmpty(hosts)) {
-            throw new RuntimeException("Please define " + group + " => host");
+            throw new RuntimeException("Please define " + hostKey + " => host");
         }
         if (env < 0 || env >= hosts.length) {
             env = 0;

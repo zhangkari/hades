@@ -7,7 +7,7 @@ public interface HadesManifest {
     String host_mainApp = "host_class100";
     String host_ipower = "host_ipower";
 
-    String wrapper_mainApp = "api_class100";
+    String group_mainApp = "api_class100";
 
     Map<String, String[]> HostTable = new HashMap<String, String[]>() {
         {
@@ -25,10 +25,10 @@ public interface HadesManifest {
         }
     };
 
-    Map<String, Class<?>> ApiWrapperTable = new HashMap<String, Class<?>>() {
+    Map<String, Class<?>> GroupTable = new HashMap<String, Class<?>>() {
         {
             // todo
-            put(wrapper_mainApp, HaApiResponse.class);
+            put(group_mainApp, HaApiResponse.class);
         }
     };
 

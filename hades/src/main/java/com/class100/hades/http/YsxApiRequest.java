@@ -17,8 +17,8 @@ public abstract class YsxApiRequest extends HaRequest {
     private static final String KEY = "8525c7db3d3d55ece4fbc08394f135d4";
 
     @Override
-    protected String getGroup() {
-        return HadesManifest.ipower;
+    protected String getHost() {
+        return HadesManifest.host_ipower;
     }
 
     @Override
