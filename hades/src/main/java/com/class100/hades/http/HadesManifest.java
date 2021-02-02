@@ -3,9 +3,13 @@ package com.class100.hades.http;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+
+@SuppressWarnings("unchecked")
 public interface HadesManifest {
-    String mainApp = "100";
-    String ipower = "200";
+    String mainApp = "class100";
+    String ipower = "ipower";
 
     Map<String, String[]> HostTable = new HashMap<String, String[]>() {
         {
@@ -20,6 +24,20 @@ public interface HadesManifest {
                 "https://meetingpre.125339.ebupt.net/mixapi",
                 "https://meetingpre.125339.ebupt.net/mixapi"
             });
+        }
+    };
+
+    Map<String, RequestBody> RequestTable = new HashMap<String, RequestBody>() {
+        {
+            // todo
+            put(mainApp, RequestBody.create("", MediaType.parse("application/json")));
+        }
+    };
+
+    HashMap<String, Class<? extends HaApiResponse<?>>> ResponseTable = new HashMap<String, Class<? extends HaApiResponse<?>>>() {
+        {
+            /* todo */
+            put(mainApp, (Class<? extends HaApiResponse<?>>) HaApiResponse.class);
         }
     };
 }
