@@ -7,6 +7,8 @@ import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtLog;
 import com.class100.atropos.generic.AtSerializers;
 import com.class100.atropos.generic.AtTexts;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +17,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -73,7 +76,7 @@ public class HaRequestDispatcher {
         dispatch(request, callback);
     }
 
-    public <T> void dispatch(HaRequest request, @NonNull final HaApiCallback<T> callback) {
+    public <T> void dispatch(final HaRequest request, @NonNull final HaApiCallback<T> callback) {
         seqId.addAndGet(10);
         if (AtTexts.isEmpty(request.id)) {
             request.id = String.valueOf(seqId.get());
@@ -88,28 +91,46 @@ public class HaRequestDispatcher {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                invokeCallback(response, callback);
+                invokeCallback(request.tag, response, callback);
             }
         });
     }
 
-    private <T> void invokeCallback(@NonNull Response response, @NonNull HaApiCallback<T> callback) {
+    private <T> void invokeCallback(String tag, @NonNull Response response, @NonNull HaApiCallback<T> callback) {
         if (response.body() == null) {
             callback.onError(500, "response body is null");
             return;
         }
         try {
             String text = response.body().string();
-            HaApiResponse<T> resp = AtSerializers.fromJson(text, HaApiResponse.class);
-            if (resp.code != 0) {
-                callback.onError(resp.code, resp.message);
+            if (AtTexts.isEmpty(tag)) {
+                invokeRawCallback(text, callback);
             } else {
-                callback.onSuccess(resp.content);
+                invokeUniversalCallback(text, callback);
             }
-            callback.onSuccess(resp.content);
         } catch (Exception e) {
             callback.onError(500, e.getMessage());
         }
+    }
+
+    // todo
+    // 1. Add response mapping
+    // 2. Use AtSerializer instead
+    private <T> void invokeUniversalCallback(@NonNull String response, @NonNull HaApiCallback<T> callback) {
+        HaApiResponse<T> resp = new Gson().fromJson(response, new TypeToken<HaApiResponse<T>>() {
+        }.getType());
+        if (resp.code != 0) {
+            callback.onError(resp.code, resp.message);
+        } else {
+            callback.onSuccess(resp.content);
+        }
+    }
+
+    // TODO use AtSerializer instead
+    private <T> void invokeRawCallback(@NonNull String response, @NonNull HaApiCallback<T> callback) {
+        ParameterizedType type = (ParameterizedType) callback.getClass().getGenericInterfaces()[0];
+        T resp = new Gson().fromJson(response, type.getActualTypeArguments()[0]);
+        callback.onSuccess(resp);
     }
 
     Request adaptRequest(HaRequest req) {

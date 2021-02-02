@@ -21,9 +21,11 @@ public abstract class HaRequest {
 
     }
 
-    String id;
-    String group;
-    String url;
+    String id;          // request identity
+    String group;       // distinguish host by group
+    String url;         // api path
+    String apiWrapper;  // distinguish api return structure
+
     @RequestMethod
     int method;
     Map<String, String> headers;
@@ -39,6 +41,10 @@ public abstract class HaRequest {
     }
 
     protected String getGroup() {
+        return "";
+    }
+
+    protected String getApiWrapper() {
         return "";
     }
 
@@ -62,7 +68,7 @@ public abstract class HaRequest {
         group = getGroup();
         url = getUrl();
         method = getMethod();
-
+        apiWrapper = getApiWrapper();
         parameters = buildParameters(parameters);
         headers = buildHeaders(headers);
         return this;

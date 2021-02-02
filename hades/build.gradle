@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 def build = depends.build
+def libs = depends.libs;
 def support = depends.support
 def test = depends.test
 
@@ -51,6 +52,7 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:4.2.2'
     api 'org.conscrypt:conscrypt-android:2.2.1'
     api 'com.class100.atropos:atropos:0.0.5'
+    implementation libs.json
     testImplementation test.junit
     androidTestImplementation test.andJunit
     androidTestImplementation test.espresso
