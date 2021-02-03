@@ -1,5 +1,6 @@
 package com.class100.yunshixun.model.request;
 
+import com.class100.hades.http.HadesManifest;
 import com.class100.hades.http.YsxApiRequest;
 
 import java.util.Map;
@@ -13,6 +14,11 @@ public class YsxTokenRequest extends YsxApiRequest {
     public YsxTokenRequest(String mobile, String password) {
         this.mobile = mobile;
         this.password = password;
+    }
+
+    @Override
+    protected String getHost() {
+        return HadesManifest.host_ipower_token;
     }
 
     @Override

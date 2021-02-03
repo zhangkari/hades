@@ -18,7 +18,7 @@ public abstract class YsxApiRequest extends HaRequest {
 
     @Override
     protected String getHost() {
-        return HadesManifest.host_ipower;
+        return HadesManifest.host_ipower_api;
     }
 
     @Override

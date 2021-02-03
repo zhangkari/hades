@@ -5,7 +5,8 @@ import java.util.Map;
 
 public interface HadesManifest {
     String host_mainApp = "host_class100";
-    String host_ipower = "host_ipower";
+    String host_ipower_api = "host_ipower_api";
+    String host_ipower_token = "host_ipower_token";
 
     String group_mainApp = "api_class100";
 
@@ -17,10 +18,15 @@ public interface HadesManifest {
                 "http://class100-qa.com",
                 "http://class100-dev.com"}
             );
-            put(host_ipower, new String[]{
+            put(host_ipower_api, new String[]{
                 "https://meeting.125339.ebupt.net/mixapi",
-                "https://contacts.125339.com.cn",
+                "https://meetingpre.125339.ebupt.net/mixapi",
                 "https://meetingpre.125339.ebupt.net/mixapi"
+            });
+            put(host_ipower_token, new String[]{
+                "https://contacts.125339.com.cn",
+                "https://contacts.125339.com.cn",
+                "https://contacts.125339.com.cn"
             });
         }
     };

@@ -1,6 +1,7 @@
 package com.class100.hades.http;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.StringDef;
 
 import com.class100.atropos.generic.AtSerializers;
 
@@ -21,9 +22,30 @@ public abstract class HaRequest {
 
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({
+        HadesManifest.host_mainApp,
+        HadesManifest.host_ipower_api,
+        HadesManifest.host_ipower_token
+    })
+    @interface RequestHost {
+
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({HadesManifest.group_mainApp})
+    @interface RequestGroup {
+
+    }
+
     String id;      // request identity
+
+    @RequestHost
     String host;    // host id
+
     String url;     // api path
+
+    @RequestGroup
     String group;   // distinguish api return structure
 
     @RequestMethod
@@ -40,11 +62,13 @@ public abstract class HaRequest {
         return "";
     }
 
-    protected String getGroup() {
+    protected @RequestGroup
+    String getGroup() {
         return "";
     }
 
-    protected String getHost() {
+    protected @RequestHost
+    String getHost() {
         return "";
     }
 
