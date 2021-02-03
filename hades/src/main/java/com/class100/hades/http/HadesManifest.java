@@ -19,9 +19,9 @@ public interface HadesManifest {
                 "http://class100-dev.com"}
             );
             put(host_ipower_api, new String[]{
-                "https://meeting.125339.ebupt.net/mixapi",
-                "https://meetingpre.125339.ebupt.net/mixapi",
-                "https://meetingpre.125339.ebupt.net/mixapi"
+                "https://meeting.125339.ebupt.net",
+                "https://meetingpre.125339.ebupt.net",
+                "https://meetingpre.125339.ebupt.net"
             });
             put(host_ipower_token, new String[]{
                 "https://contacts.125339.com.cn",

@@ -144,7 +144,7 @@ public class HaRequestDispatcher {
         final String url = buildCompleteUrl(req.url, req.host);
         switch (req.getMethod()) {
             case HaRequest.METHOD_GET:
-                builder.url(buildGetParameters(url, req.parameters));
+                builder.url(appendGetParameters(url, req.parameters));
                 builder.get();
                 break;
 
@@ -160,7 +160,14 @@ public class HaRequestDispatcher {
         return builder.build();
     }
 
-    String buildGetParameters(String url, Map<String, String> params) {
+    /**
+     * Append complete url with params of get method
+     *
+     * @param url    complete url
+     * @param params get params
+     * @return url with get params
+     */
+    public static String appendGetParameters(String url, Map<String, String> params) {
         if (AtCollections.isEmpty(params)) {
             return url;
         }
@@ -176,7 +183,14 @@ public class HaRequestDispatcher {
         return sb.toString();
     }
 
-    String buildCompleteUrl(String url, String hostKey) {
+    /**
+     * Combine urlKey and hostKey to become a complete url
+     *
+     * @param url     url key
+     * @param hostKey host key
+     * @return complete url
+     */
+    public static String buildCompleteUrl(String url, String hostKey) {
         String[] hosts = HadesManifest.HostTable.get(hostKey);
         if (AtCollections.isEmpty(hosts)) {
             throw new RuntimeException("Please define " + hostKey + " => host");
@@ -195,7 +209,7 @@ public class HaRequestDispatcher {
     }
 
     MediaType buildRequestMediaType() {
-        return MediaType.parse("application/json");
+        return MediaType.parse("application/json;charset=utf-8");
     }
 
     String adaptRequestBody(Map<String, String> params) {

@@ -79,12 +79,18 @@ public abstract class HaRequest {
         return METHOD_GET;
     }
 
-    protected Map<String, String> buildParameters(final Map<String, String> map) {
-        return map;
+    protected void buildParameters(final Map<String, String> map) {
     }
 
-    protected Map<String, String> buildHeaders(final Map<String, String> map) {
-        return map;
+    protected void buildHeaders(final Map<String, String> map) {
+    }
+
+    private void assembleParameters(Map<String, String> map) {
+        buildParameters(map);
+    }
+
+    private void assembleHeaders(Map<String, String> map) {
+        buildHeaders(map);
     }
 
     final HaRequest inflate() {
@@ -93,8 +99,8 @@ public abstract class HaRequest {
         group = getGroup();
         url = getUrl();
         method = getMethod();
-        parameters = buildParameters(parameters);
-        headers = buildHeaders(headers);
+        assembleHeaders(headers);
+        assembleParameters(parameters);
         return this;
     }
 

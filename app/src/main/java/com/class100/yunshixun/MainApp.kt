@@ -10,6 +10,6 @@ class MainApp : Application() {
         super.onCreate()
         AtAbilityManager.initialize(this, true)
         HaHttpClient.enableLog(true)
-        HaRequestDispatcher.switchEnv(HaRequestDispatcher.ENV_QA)
+        HaRequestDispatcher.switchEnv(HaRequestDispatcher.ENV_PROD)
     }
 }

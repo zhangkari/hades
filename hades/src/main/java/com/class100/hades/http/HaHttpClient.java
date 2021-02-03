@@ -4,13 +4,16 @@ import com.class100.atropos.env.context.AtContextAbility;
 import com.class100.atropos.generic.AtLog;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -68,7 +71,19 @@ public final class HaHttpClient extends AtContextAbility {
             Logs.d(TAG, "url => " + request.url());
             Logs.d(TAG, "method => " + request.method());
             Logs.d(TAG, "request-headers => \n" + request.headers().toString());
-            Logs.d(TAG, "request-body => \n" + request.body());
+            String body = null;
+            RequestBody requestBody = request.body();
+            if (requestBody != null) {
+                Buffer buffer = new Buffer();
+                requestBody.writeTo(buffer);
+                Charset charset = StandardCharsets.UTF_8;
+                MediaType contentType = requestBody.contentType();
+                if (contentType != null) {
+                    charset = contentType.charset(StandardCharsets.UTF_8);
+                }
+                body = buffer.readString(charset);
+            }
+            Logs.d(TAG, "request-body => \n" + body);
 
             long startNs = System.nanoTime();
             Response response = chain.proceed(request);

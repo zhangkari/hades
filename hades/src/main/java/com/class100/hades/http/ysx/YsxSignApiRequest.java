@@ -1,8 +1,9 @@
-package com.class100.hades.http;
+package com.class100.hades.http.ysx;
 
 import com.class100.atropos.generic.AtCollections;
 import com.class100.atropos.generic.AtMD5;
 import com.class100.atropos.generic.AtTexts;
+import com.class100.hades.http.ysx.YsxApiRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -11,32 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Yunshixun Api request
-public abstract class YsxApiRequest extends HaRequest {
+// Yunshixun Sign Api request
+public abstract class YsxSignApiRequest extends YsxApiRequest {
+    // TODO  save them in security env
     private static final String IDENTITY = "6ff56fecf02981471ce1c319f520be2f";
     private static final String KEY = "8525c7db3d3d55ece4fbc08394f135d4";
 
     @Override
-    protected String getHost() {
-        return HadesManifest.host_ipower_api;
-    }
-
-    @Override
-    public Map<String, String> buildHeaders(Map<String, String> map) {
-        map.put("Content-Type", "application/json");
-        return super.buildHeaders(map);
-    }
-
-    protected void buildParams(final Map<String, String> map) {
-
-    }
-
-    @Override
-    protected final Map<String, String> buildParameters(Map<String, String> map) {
-        buildParams(map);
+    protected final void buildParameters(Map<String, String> map) {
+        super.buildParameters(map);
         map.put("identity", IDENTITY);
         map.put("sign", signParams(KEY, map));
-        return map;
     }
 
     protected static String signParams(String key, Map<String, String> params) {
@@ -54,7 +40,7 @@ public abstract class YsxApiRequest extends HaRequest {
             if (AtTexts.isEmpty(entry.getValue())) {
                 continue;
             }
-            if ("sign".equalsIgnoreCase(entry.getValue())) {
+            if ("sign".equalsIgnoreCase(entry.getKey())) {
                 continue;
             }
             result.put(entry.getKey(), entry.getValue());
