@@ -15,8 +15,8 @@ import java.util.Map;
 // Yunshixun Sign Api request
 public abstract class YsxSignApiRequest extends YsxApiRequest {
     // TODO  save them in security env
-    private static final String IDENTITY = "6ff56fecf02981471ce1c319f520be2f";
-    private static final String KEY = "8525c7db3d3d55ece4fbc08394f135d4";
+    private static final String IDENTITY = "08ccad5103ce1d4ee402aee4c7937c8f";
+    private static final String KEY = "f5400cecdac750ac344919ba50381d29";
 
     @Override
     protected final void buildParameters(Map<String, String> map) {
