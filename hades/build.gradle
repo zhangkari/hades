@@ -7,8 +7,8 @@ def libs = depends.libs;
 def support = depends.support
 def test = depends.test
 
-def version_code = 000002
-def version_name = "0.0.2"
+def version_code = 000003
+def version_name = "0.0.3"
 
 def USER = "zhangkari"
 def GROUP = "com.class100.hades"
