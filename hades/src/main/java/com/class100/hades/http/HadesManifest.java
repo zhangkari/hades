@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface HadesManifest {
+    String host_invalid = "";
     String host_mainApp = "host_class100";
     String host_ipower_api = "host_ipower_api";
     String host_ipower_token = "host_ipower_token";
 
+    String group_none = "";
     String group_mainApp = "api_class100";
 
     Map<String, String[]> HostTable = new HashMap<String, String[]>() {
