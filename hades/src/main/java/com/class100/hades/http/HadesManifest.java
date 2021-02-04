@@ -14,11 +14,10 @@ public interface HadesManifest {
 
     Map<String, String[]> HostTable = new HashMap<String, String[]>() {
         {
-            // TODO
             put(host_mainApp, new String[]{
-                "http://class100.com",
-                "http://class100-qa.com",
-                "http://class100-dev.com"}
+                "https://v2-api-ykc.class100.com",
+                "https://v2-api-ykc.qa.class100.com",
+                "https://v2-api-ykc.qa.class100.com"}
             );
             put(host_ipower_api, new String[]{
                 "https://meeting.125339.ebupt.net",
