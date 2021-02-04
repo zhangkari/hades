@@ -8,7 +8,6 @@ import com.class100.atropos.generic.AtLog;
 import com.class100.atropos.generic.AtSerializers;
 import com.class100.atropos.generic.AtTexts;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -96,18 +95,18 @@ public class HaRequestDispatcher {
         });
     }
 
-    private <T> void invokeCallback(String tag, @NonNull Response response, @NonNull HaApiCallback<T> callback) {
+    private <T> void invokeCallback(String group, @NonNull Response response, @NonNull HaApiCallback<T> callback) {
         if (response.body() == null) {
             callback.onError(500, "response body is null");
             return;
         }
         try {
             String text = response.body().string();
-            if (AtTexts.isEmpty(tag)) {
-                invokeRawCallback(text, callback);
-            } else {
-                invokeUniversalCallback(text, callback);
-            }
+//            if (AtTexts.isEmpty(group)) {
+            invokeRawCallback(text, callback);
+//            } else {
+//                invokeUniversalCallback(group, text, callback);
+//            }
         } catch (Exception e) {
             callback.onError(500, e.getMessage());
         }
@@ -116,13 +115,16 @@ public class HaRequestDispatcher {
     // todo
     // 1. Add response mapping
     // 2. Use AtSerializer instead
-    private <T> void invokeUniversalCallback(@NonNull String response, @NonNull HaApiCallback<T> callback) {
-        HaApiResponse<T> resp = new Gson().fromJson(response, new TypeToken<HaApiResponse<T>>() {
-        }.getType());
-        if (resp.code != 0) {
-            callback.onError(resp.code, resp.message);
-        } else {
-            callback.onSuccess(resp.content);
+    private void invokeUniversalCallback(String group, @NonNull String response, @NonNull HaApiCallback<Object> callback) {
+        Class<?> clazz = HadesManifest.GroupTable.get(group);
+        if (clazz == HaApiResponse.class) {
+            ParameterizedType type = (ParameterizedType) callback.getClass().getGenericInterfaces()[0];
+            HaApiResponse<? extends RespAppContent> resp = new Gson().fromJson(response, type);
+            if (resp.code != 0) {
+                callback.onError(resp.code, resp.msg);
+            } else {
+                callback.onSuccess(resp.data);
+            }
         }
     }
 

@@ -34,7 +34,6 @@ public interface HadesManifest {
 
     Map<String, Class<?>> GroupTable = new HashMap<String, Class<?>>() {
         {
-            // todo
             put(group_mainApp, HaApiResponse.class);
         }
     };

@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.class100.atropos.env.context.AtPrefs
 import com.class100.hades.http.HaApiCallback
+import com.class100.hades.http.HaApiResponse
 import com.class100.hades.http.HaHttpClient
 import com.class100.hades.http.ysx.YsxApiToken
 import com.class100.yunshixun.model.request.ReqYsxCreateMeeting
@@ -57,17 +58,16 @@ class DevOpsActivity : AppCompatActivity() {
     private fun requestToken() {
         HaHttpClient.getInstance().enqueue(
             ReqYsxToken(
-                "15928695284",
-                "Androidclass100"
+                "15928695284"
             ),
-            object : HaApiCallback<RespYsxToken> {
+            object : HaApiCallback<HaApiResponse<RespYsxToken>> {
                 override fun onError(code: Int, message: String?) {
                     Log.d(TAG, "getToken error:$code, message")
                 }
 
-                override fun onSuccess(content: RespYsxToken?) {
-                    content?.token?.let { YsxApiToken.saveToken(it) }
-                    Log.d(TAG, "getToken ok:token=>${content?.token}")
+                override fun onSuccess(resp: HaApiResponse<RespYsxToken>?) {
+                    resp?.data?.token?.let { YsxApiToken.saveToken(it) }
+                    Log.d(TAG, "getToken ok:token=>${resp?.data?.token}")
                 }
             })
     }
