@@ -193,6 +193,9 @@ public class HaRequestDispatcher {
      * @return complete url
      */
     public static String buildCompleteUrl(String url, String hostKey) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            return url;
+        }
         String[] hosts = HadesManifest.HostTable.get(hostKey);
         if (AtCollections.isEmpty(hosts)) {
             throw new RuntimeException("Please define " + hostKey + " => host");
