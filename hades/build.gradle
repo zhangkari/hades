@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'kotlin-android'
+apply plugin: 'maven'
 
 def build = depends.build
 def libs = depends.libs;
@@ -48,11 +49,74 @@ android {
     }
 }
 
+def isRelease() {
+    return !depends.artifact.VName.contains("-")
+}
+
+def getRepoUrl() {
+    def url = NEXUS_HOST_URL + "/repository"
+    def releasesUrl = url + "/maven-releases/"
+    def snapshotUrl = url + "/maven-snapshots/"
+    isRelease() ? releasesUrl : snapshotUrl
+}
+
+/*
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = GROUP
+            artifactId = ARTIFACT
+            version = VName
+        }
+    }
+
+    repositories {
+        maven {
+            def url = NEXUS_HOST_URL + "/repository/maven-public"
+            def releasesUrl = url + "/maven-releases/"
+            def snapshotUrl = url + "/maven-snapshots/"
+            url = isRelease() ? releasesUrl : snapshotUrl
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+    }
+}
+*/
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = GROUP
+            pom.artifactId = ARTIFACT
+            pom.version = VName
+            repository(url: getRepoUrl()) {
+                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+            }
+        }
+    }
+
+    println("uploadArchives")
+    println("####################################")
+    println("url => " + getRepoUrl())
+    println("artifact => " + GROUP + ":" + ARTIFACT + ":" + VName)
+    println("####################################")
+}
+
+def vsn(artifact) {
+    if (isRelease()) {
+        return artifact
+    } else {
+        return "$artifact-SNAPSHOT"
+    }
+}
+
 dependencies {
     implementation support.appcompat
     api 'com.squareup.okhttp3:okhttp:4.2.2'
     api 'org.conscrypt:conscrypt-android:2.2.1'
-    api 'com.class100.atropos:atropos:0.0.5'
+    api vsn('com.class100.atropos:atropos:0.0.7')
     implementation libs.json
     testImplementation test.junit
     androidTestImplementation test.andJunit
