@@ -1,5 +1,8 @@
 package com.class100.hades.http;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
@@ -57,6 +60,8 @@ public class HaRequestDispatcher {
 
     private final OkHttpClient client;
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
     public static void switchEnv(@HostEnv int env) {
         if (env < 0 || env > 2) {
             HaRequestDispatcher.env = 0;
@@ -84,8 +89,13 @@ public class HaRequestDispatcher {
 
         client.newCall(adaptRequest(request)).enqueue(new Callback() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                callback.onError(404, e.getMessage());
+            public void onFailure(@NotNull Call call, @NotNull final IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onError(404, e.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -95,9 +105,14 @@ public class HaRequestDispatcher {
         });
     }
 
-    private <T> void invokeCallback(String group, @NonNull Response response, @NonNull HaApiCallback<T> callback) {
+    private <T> void invokeCallback(String group, @NonNull Response response, @NonNull final HaApiCallback<T> callback) {
         if (response.body() == null) {
-            callback.onError(500, "response body is null");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onError(500, "response body is null");
+                }
+            });
             return;
         }
         try {
@@ -107,8 +122,13 @@ public class HaRequestDispatcher {
 //            } else {
 //                invokeUniversalCallback(group, text, callback);
 //            }
-        } catch (Exception e) {
-            callback.onError(500, e.getMessage());
+        } catch (final Exception e) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onError(500, e.getMessage());
+                }
+            });
         }
     }
 
@@ -129,10 +149,15 @@ public class HaRequestDispatcher {
     }
 
     // TODO use AtSerializer instead
-    private <T> void invokeRawCallback(@NonNull String response, @NonNull HaApiCallback<T> callback) {
+    private <T> void invokeRawCallback(@NonNull String response, @NonNull final HaApiCallback<T> callback) {
         ParameterizedType type = (ParameterizedType) callback.getClass().getGenericInterfaces()[0];
-        T resp = new Gson().fromJson(response, type.getActualTypeArguments()[0]);
-        callback.onSuccess(resp);
+        final T resp = new Gson().fromJson(response, type.getActualTypeArguments()[0]);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onSuccess(resp);
+            }
+        });
     }
 
     Request adaptRequest(HaRequest req) {
