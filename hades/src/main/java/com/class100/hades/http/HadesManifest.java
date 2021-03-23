@@ -16,8 +16,8 @@ public interface HadesManifest {
         {
             put(host_mainApp, new String[]{
                 "https://v2-api-ykc.class100.com",
-                "https://v2-api-ykc.qa.class100.com",
-                "https://v2-api-ykc.qa.class100.com"}
+                "https://yun-tv.qa.class100.com",
+                "https://yun-tv.qa.class100.com"}
             );
             put(host_ipower_api, new String[]{
                 "https://meeting.125339.ebupt.net",
