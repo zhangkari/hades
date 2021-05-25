@@ -68,9 +68,9 @@ public final class HaHttpClient extends AtContextAbility {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            Logs.d(TAG, "url => " + request.url());
-            Logs.d(TAG, "method => " + request.method());
-            Logs.d(TAG, "request-headers => \n" + request.headers().toString());
+            final String url = request.url().toString();
+            Logs.d(TAG, url + " method => " + request.method());
+            Logs.d(TAG, url + " request-headers => \n" + request.headers().toString());
             String body = null;
             RequestBody requestBody = request.body();
             if (requestBody != null) {
@@ -83,21 +83,21 @@ public final class HaHttpClient extends AtContextAbility {
                 }
                 body = buffer.readString(charset);
             }
-            Logs.d(TAG, "request-body => \n" + body);
+            Logs.d(TAG, url + " request-body => \n" + body);
 
             long startNs = System.nanoTime();
             Response response = chain.proceed(request);
             long elapseMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
-            Logs.d(TAG, "elapse => " + elapseMs + " ms");
+            Logs.d(TAG, url + " elapse => " + elapseMs + " ms");
 
             Headers headers = response.headers();
-            Logs.d(TAG, "response-headers => \n" + headers.toString());
+            Logs.d(TAG, url + " response-headers => \n" + headers.toString());
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.getBuffer();
-                Logs.d(TAG, "response => \n" + buffer.clone().readString(StandardCharsets.UTF_8));
+                Logs.d(TAG, url + " response => \n" + buffer.clone().readString(StandardCharsets.UTF_8));
             }
             return response;
         }
