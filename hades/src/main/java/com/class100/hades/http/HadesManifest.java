@@ -15,7 +15,7 @@ public interface HadesManifest {
     Map<String, String[]> HostTable = new HashMap<String, String[]>() {
         {
             put(host_mainApp, new String[]{
-                "https://v2-api-ykc.class100.com",
+                "https://yun-tv.dev.class100.com",
                 "https://yun-tv.qa.class100.com",
                 "https://yun-tv.qa.class100.com"}
             );
