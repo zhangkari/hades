@@ -1,8 +1,8 @@
 ext.depends = [:]
 
 def artifact = [:]
-artifact.VName = "1.0.2"
-artifact.VCode = 10002
+artifact.VName = "1.0.3"
+artifact.VCode = 10003
 
 def build = [:]
 build.compileSdkVersion = 28
