@@ -8,9 +8,4 @@ public abstract class HaApiRequest extends HaRequest {
     protected String getHost() {
         return HadesManifest.host_mainApp;
     }
-
-    @Override
-    protected String getGroup() {
-        return HadesManifest.group_mainApp;
-    }
 }

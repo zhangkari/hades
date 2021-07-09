@@ -1,7 +1,6 @@
 package com.class100.hades.http.ysx;
 
 import com.class100.hades.http.HaRequest;
-import com.class100.hades.http.HadesManifest;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -11,7 +10,7 @@ import java.util.Map;
 public abstract class YsxApiRequest extends HaRequest {
     @Override
     protected String getHost() {
-        return HadesManifest.host_ipower_api;
+        return "yunshixun";
     }
 
     protected void buildHeader(Map<String, String> map) {

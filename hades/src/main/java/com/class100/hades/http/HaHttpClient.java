@@ -30,7 +30,7 @@ import okio.BufferedSource;
 
 public final class HaHttpClient extends AtContextAbility {
     private static final String TAG = "HaHttpClient";
-    private static boolean enableLog;
+    private static boolean enableLog = true;
     private volatile static HaHttpClient _instance;
     private HaRequestDispatcher dispatcher;
 
@@ -51,9 +51,9 @@ public final class HaHttpClient extends AtContextAbility {
 
     private HaHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        //    if (enableLog) {
-        builder.addInterceptor(new LogInterceptor());
-        //    }
+        if (enableLog) {
+            builder.addInterceptor(new LogInterceptor());
+        }
         builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
                 .hostnameVerifier(SSLSocketClient.getHostnameVerifier());
         dispatcher = new HaRequestDispatcher(builder.build());

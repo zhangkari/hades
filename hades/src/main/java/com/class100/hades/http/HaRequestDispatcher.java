@@ -100,12 +100,12 @@ public class HaRequestDispatcher {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                invokeCallback(request.group, response, callback);
+                invokeCallback(response, callback);
             }
         });
     }
 
-    private <T> void invokeCallback(String group, @NonNull Response response, @NonNull final HaApiCallback<T> callback) {
+    private <T> void invokeCallback(@NonNull Response response, @NonNull final HaApiCallback<T> callback) {
         if (response.body() == null) {
             handler.post(new Runnable() {
                 @Override
@@ -117,11 +117,7 @@ public class HaRequestDispatcher {
         }
         try {
             String text = response.body().string();
-//            if (AtTexts.isEmpty(group)) {
             invokeRawCallback(text, callback);
-//            } else {
-//                invokeUniversalCallback(group, text, callback);
-//            }
         } catch (final Exception e) {
             handler.post(new Runnable() {
                 @Override
@@ -129,22 +125,6 @@ public class HaRequestDispatcher {
                     callback.onError(500, e.getMessage());
                 }
             });
-        }
-    }
-
-    // todo
-    // 1. Add response mapping
-    // 2. Use AtSerializer instead
-    private void invokeUniversalCallback(String group, @NonNull String response, @NonNull HaApiCallback<Object> callback) {
-        Class<?> clazz = HadesManifest.GroupTable.get(group);
-        if (clazz == HaApiResponse.class) {
-            ParameterizedType type = (ParameterizedType) callback.getClass().getGenericInterfaces()[0];
-            HaApiResponse<? extends RespAppContent> resp = new Gson().fromJson(response, type);
-            if (resp.code != 0) {
-                callback.onError(resp.code, resp.msg);
-            } else {
-                callback.onSuccess(resp.data);
-            }
         }
     }
 
@@ -202,9 +182,9 @@ public class HaRequestDispatcher {
         sb.append("?");
         for (Map.Entry<String, String> entry : params.entrySet()) {
             sb.append(entry.getKey())
-                .append("=")
-                .append(entry.getValue())
-                .append("&");
+                    .append("=")
+                    .append(entry.getValue())
+                    .append("&");
         }
         sb.delete(sb.length() - 1, sb.length());
         return sb.toString();
