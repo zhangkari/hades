@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
@@ -49,13 +50,30 @@ public final class HaHttpClient extends AtContextAbility {
         return _instance;
     }
 
+    final X509TrustManager trustManager = new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    };
+
     private HaHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (enableLog) {
             builder.addInterceptor(new LogInterceptor());
         }
-        builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory())
-                .hostnameVerifier(SSLSocketClient.getHostnameVerifier());
+        builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(), trustManager)
+            .hostnameVerifier(SSLSocketClient.getHostnameVerifier());
         dispatcher = new HaRequestDispatcher(builder.build());
     }
 
@@ -127,20 +145,20 @@ public final class HaHttpClient extends AtContextAbility {
 
         private static TrustManager[] getTrustManager() {
             TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return new X509Certificate[]{};
-                        }
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) {
                     }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                    }
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[]{};
+                    }
+                }
             };
             return trustAllCerts;
         }
